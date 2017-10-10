@@ -1,6 +1,6 @@
 {
   "name": "sourcemapped-stacktrace-node",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "homepage": "https://github.com/stereobooster/sourcemapped-stacktrace",
   "license": "BSD-3-Clause",
   "author": {
@@ -11,27 +11,22 @@
     "stereobooster <stereobooster@gmail.com>"
   ],
   "main": "sourcemapped-stacktrace.js",
-  "description":
-    "A simple module for applying source maps to JS stack traces in the browser.",
+  "description": "A simple module for applying source maps to JS stack traces in the browser.",
   "dependencies": {
     "es6-promise": "^4.1.1",
     "isomorphic-fetch": "^2.2.1",
     "source-map": "^0.6.1"
   },
   "devDependencies": {
-    "babel-preset-es2015": "^6.9.0",
     "jest": "^21.2.1",
-    "prettier": "1.7.4",
-    "webpack": "^1.12.0"
+    "prettier": "1.7.4"
   },
   "repository": {
     "type": "git",
     "url": "http://github.com/novocaine/sourcemapped-stacktrace"
   },
   "scripts": {
-    "precommit":
-      "prettier --write *.{js,json,css} && prettier --write tests/*.{js,json,css}",
-    "test": "jest",
-    "prepublish": "webpack"
+    "precommit": "prettier --write *.{js,json,css} && prettier --write tests/*.{js,json,css}",
+    "test": "jest"
   }
 }
