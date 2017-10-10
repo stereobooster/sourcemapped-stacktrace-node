@@ -15,7 +15,7 @@ page.on("error", stacktrace => {
   mapStackTrace(
     stacktrace,
     result => {
-      console.log(mappedStack.join("\n"));
+      console.log(result.join("\n"));
     },
     { isChromeOrEdge: true }
   );
