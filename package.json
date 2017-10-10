@@ -1,8 +1,11 @@
 {
   "name": "sourcemapped-stacktrace-node",
-  "version": "2.0.1",
+  "version": "2.0.2",
   "homepage": "https://github.com/stereobooster/sourcemapped-stacktrace",
   "license": "BSD-3-Clause",
+  "engines": {
+    "node": ">= 8.6.0"
+  },
   "author": {
     "name": "James Salter",
     "email": "iteration@gmail.com"
@@ -23,7 +26,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "http://github.com/novocaine/sourcemapped-stacktrace"
+    "url": "http://github.com/stereobooster/sourcemapped-stacktrace"
   },
   "scripts": {
     "precommit": "prettier --write *.{js,json,css} && prettier --write tests/*.{js,json,css}",
