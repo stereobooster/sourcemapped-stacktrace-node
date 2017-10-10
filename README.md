@@ -1,3 +1,29 @@
+# sourcemapped-stacktrace-node
+
+⚠️ This is a lazy fork of a [sourcemapped-stacktrace](https://github.com/novocaine/sourcemapped-stacktrace). To do all things right I need to do a lot of refactoring, for which I do not have time right now. So I did minimal change to be able to use it as npm package. [This](https://github.com/novocaine/sourcemapped-stacktrace/pull/31) is a PR with first steps of a refactoring. **Highly experimental. Undocumented.**
+
+## Example
+
+```javascript
+const mapStackTrace = require("sourcemapped-stacktrace-node").default;
+
+// puppeteer is not required to use sourcemapped-stacktrace-node
+// it is used for example
+const browser = await puppeteer.launch();
+const page = await browser.newPage();
+page.on("error", stacktrace => {
+  mapStackTrace(
+    stacktrace,
+    result => {
+      console.log(mappedStack.join("\n"));
+    },
+    { isChromeOrEdge: true }
+  );
+});
+```
+
+# Here goes original readme:
+
 This is a simple module for applying source maps to JS stack traces in the browser. 
 
 ## The problem this solves
@@ -57,26 +83,6 @@ Re-map entries in a stacktrace using sourcemaps if available.
   - Safari
   - Internet Explorer 11 and up
   - Microsoft Edge
-
-## Example
-
-```javascript
-try {
-  // break something
-  bork();
-} catch (e) {
-  // pass e.stack to window.mapStackTrace
-  window.mapStackTrace(e.stack, function(mappedStack) {
-    // do what you want with mappedStack here
-    console.log(mappedStack.join("\n"));
-  }, {
-    filter: function (line) {
-      // process only sources containing `spec.js`
-      return /(spec\.js)/.test(line);
-    }
-  });
-}
-```
 
 ## Longer Explanation
 
