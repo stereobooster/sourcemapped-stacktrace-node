@@ -2,6 +2,11 @@
 
 ⚠️ This is a lazy fork of a [sourcemapped-stacktrace](https://github.com/novocaine/sourcemapped-stacktrace). To do all things right I need to do a lot of refactoring, for which I do not have time right now. So I did minimal change to be able to use it as npm package. [This](https://github.com/novocaine/sourcemapped-stacktrace/pull/31) is a PR with first steps of a refactoring. **Highly experimental. Undocumented.**
 
+## TODO
+
+- Support node modules, but check if file is readable
+- Support recursive resolution - if source map directs to minified file, than you can pickup sourcemap of minified file
+
 ## Example
 
 ```javascript
