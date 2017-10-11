@@ -21,17 +21,17 @@ const createDefaultUriResolver = (overrideFetcher) => {
     let result;
 
     if (uri.match(/<anonymous>/)) {
-      result = Promise.resolve(false);
+      return store[uri] = Promise.resolve(false);
     }
 
     // actually can resolve this, but skip for now
-    if (!uri.match(/node_modules/)) {
-      result = Promise.resolve(false);
+    if (uri.match(/node_modules/)) {
+      return store[uri] = Promise.resolve(false);
     }
 
     // do not know how to resolve this, can use referrer
-    if (uri.indexOf("/") !== -1) {
-      result = Promise.resolve(false);
+    if (uri.indexOf("/") === -1) {
+      return store[uri] = Promise.resolve(false);
     }
 
     try {
@@ -49,7 +49,7 @@ const createDefaultUriResolver = (overrideFetcher) => {
       result = Promise.resolve(false);
     }
 
-    return (store[uri] = result);
+    return store[uri] = result;
   };
 };
 
@@ -64,7 +64,7 @@ const getSourceMapUri = jsSource => {
 
 const absUrlRegex = new RegExp("^(?:[a-z]+:)?//", "i");
 
-const sourceMapResolver = (sourceMapUri, opts) => {
+const sourceMapResolver = (sourceMapUri, uri, opts) => {
   const embeddedSourceMap = sourceMapUri.match(
     "data:application/json;(charset=[^;]+;)?base64,(.*)"
   );
@@ -134,7 +134,7 @@ const parseLine = async (line, opts) => {
       // console.log('sourceMapUri === false')
       return line;
     }
-    const sourceMapText = await sourceMapResolver(sourceMapUri, opts);
+    const sourceMapText = await sourceMapResolver(sourceMapUri, uri, opts);
     if (sourceMapText === false) {
       // console.log('sourceMapText === false')
       return line;
