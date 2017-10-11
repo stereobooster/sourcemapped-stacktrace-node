@@ -8,26 +8,6 @@
  * http://opensource.org/licenses/BSD-3-Clause
  */
 
-// note we only include source-map-consumer, not the whole source-map library,
-// which includes gear for generating source maps that we don't need
-
-// TODO: place those function to browser specific file
-// function isChromeOrEdge() {
-//   return navigator.userAgent.toLowerCase().indexOf("chrome") > -1;
-// }
-
-// function isFirefox() {
-//   return navigator.userAgent.toLowerCase().indexOf("firefox") > -1;
-// }
-
-// function isSafari() {
-//   return navigator.userAgent.toLowerCase().indexOf("safari") > -1;
-// }
-
-// function isIE11Plus() {
-//   return document.documentMode && document.documentMode >= 11;
-// }
-
 require("es6-promise").polyfill();
 require("isomorphic-fetch");
 const SourceMapConsumer = require("source-map").SourceMapConsumer;
@@ -41,16 +21,19 @@ const Fetcher = function(done, opts) {
   this.done = done;
 };
 
-Fetcher.prototype.fetchScript = function(uri) {
+Fetcher.prototype.fetchScript = async function(uri) {
   if (this.mapForUri[uri]) {
     return;
   }
   this.sem++;
   this.mapForUri[uri] = null;
 
-  fetch(uri).then(response => {
+  try {
+    const response = await fetch(uri);
     this.onScriptLoad(response, uri);
-  });
+  } catch (e) {
+    console.log(`Error fetching ${uri}`);
+  }
 };
 
 const absUrlRegex = new RegExp("^(?:[a-z]+:)?//", "i");
@@ -87,15 +70,21 @@ Fetcher.prototype.onScriptLoad = async function(response, uri) {
           }
         }
 
-        fetch(mapUri).then(response => {
+        try {
+          const responseMap = await fetch(mapUri);
           this.sem--;
           if (response.status === 200 || mapUri.slice(0, 7) === "file://") {
-            that.mapForUri[uri] = new SourceMapConsumer(response.text());
+            this.mapForUri[uri] = new SourceMapConsumer(
+              await responseMap.text()
+            );
           }
-          if (this.sem === 0) {
-            this.done(that.mapForUri);
-          }
-        });
+        } catch (e) {
+          this.sem--;
+          console.log(`Error fetching ${mapUri}`);
+        }
+        if (this.sem === 0) {
+          this.done(this.mapForUri);
+        }
       }
     } else {
       // no map
@@ -211,7 +200,7 @@ function mapStackTrace(stack, done, opts) {
     if (fields && fields.length === expected_fields) {
       rows[i] = fields;
       const uri = fields[1];
-      if (!uri.match(/<anonymous>/)) {
+      if (!uri.match(/<anonymous>|node_modules/)) {
         fetcher.fetchScript(uri);
       }
     }

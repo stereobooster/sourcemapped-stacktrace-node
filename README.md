@@ -11,9 +11,9 @@ const mapStackTrace = require("sourcemapped-stacktrace-node").default;
 // it is used for example
 const browser = await puppeteer.launch();
 const page = await browser.newPage();
-page.on("error", stacktrace => {
+page.on("pageerror", e => {
   mapStackTrace(
-    stacktrace,
+    e.stack,
     result => {
       console.log(result.join("\n"));
     },
