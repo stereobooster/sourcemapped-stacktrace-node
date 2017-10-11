@@ -200,7 +200,7 @@ function mapStackTrace(stack, done, opts) {
     if (fields && fields.length === expected_fields) {
       rows[i] = fields;
       const uri = fields[1];
-      if (!uri.match(/<anonymous>|node_modules/)) {
+      if (!uri.match(/<anonymous>|node_modules/) && uri.indexOf("/") !== -1) {
         fetcher.fetchScript(uri);
       }
     }
