@@ -1,9 +1,9 @@
 const fs = require("fs");
 const path = require("path");
 
-const mockFetchRespnse = text =>
+const mockFetchRespnse = ({ text, status = 200 }) =>
   Promise.resolve({
-    status: 200,
+    status,
     text: () => Promise.resolve(text)
   });
 
@@ -12,11 +12,12 @@ const testFetcher = uri => {
   const fileName = uriParts[uriParts.length - 1];
   const filePath = path.join(__dirname, "fixtures", fileName);
   if (fs.existsSync(filePath)) {
-    return mockFetchRespnse(fs.readFileSync(filePath, "utf8"));
+    return mockFetchRespnse({ text: fs.readFileSync(filePath, "utf8") });
   }
 
   console.log(uri);
-  return fetch(uri);
+  return Promise.resolve(false);
+  // return fetch(uri);
 };
 
 exports.default = testFetcher;

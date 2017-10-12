@@ -13,3 +13,5 @@ function isSafari() {
 function isIE11Plus() {
   return document.documentMode && document.documentMode >= 11;
 }
+
+// nothing usefull here so far

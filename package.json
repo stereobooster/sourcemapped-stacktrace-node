@@ -11,7 +11,7 @@
     "email": "iteration@gmail.com"
   },
   "contributors": ["stereobooster <stereobooster@gmail.com>"],
-  "main": "src/index-node.js",
+  "main": "src/indexNode.js",
   "description":
     "A simple module for applying source maps to JS stack traces in the browser.",
   "dependencies": {
@@ -29,7 +29,7 @@
   },
   "scripts": {
     "precommit":
-      "prettier --write *.{js,json,css} && prettier --write tests/*.{js,json,css}",
+      "prettier --write *.{js,json,css} && prettier --write {tests,src}/*.{js,json,css}",
     "test": "jest"
   }
 }

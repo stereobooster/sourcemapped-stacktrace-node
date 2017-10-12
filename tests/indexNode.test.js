@@ -1,8 +1,7 @@
-const mapStackTrace = require("../src/index-node.js").default;
-const createDefaultUriResolver = require("../src/index-node.js")
-  .createDefaultUriResolver;
+const mapStackTrace = require("../src/indexNode.js").default;
+const createNodeResolver = require("../src/indexNode.js").createNodeResolver;
 const testFetcher = require("./testFetcher.js").default;
-const testResolver = createDefaultUriResolver(testFetcher);
+const testResolver = createNodeResolver({ uriFetcher: testFetcher });
 
 const chromeTrace = `Error: bork from es6
     at BabelBorker.bork (http://novocaine.github.io/sourcemapped-stacktrace-demo/public_html/bork.babel.js:15:19)
@@ -15,12 +14,10 @@ const chromeMapedTrace = `    at BabelBorker.bork (bork.es6:3:14)
     at errorAndPrint (http://novocaine.github.io/sourcemapped-stacktrace-demo/public_html/smst.html:37:11)
     at HTMLButtonElement.onclick (http://novocaine.github.io/sourcemapped-stacktrace-demo/public_html/smst.html:16:61)`;
 
-// TODO: provide tests for different browsers
-// TDOD: write tests that would run inside browser
 test("works for chrome trace", done => {
   mapStackTrace(chromeTrace, {
     isChromeOrEdge: true,
-    uriResolver: testResolver
+    resolver: testResolver
   }).then(result => {
     expect(result).toBe(chromeMapedTrace);
     done();
@@ -73,7 +70,7 @@ const puppeteerMappedTrace = `    at resize (../node_modules/mapbox-gl/dist/mapb
 test("works for puppeteer trace", done => {
   mapStackTrace(puppeteerTrace, {
     isChromeOrEdge: true,
-    uriResolver: testResolver
+    resolver: testResolver
   }).then(result => {
     expect(result).toBe(puppeteerMappedTrace);
     done();

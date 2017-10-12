@@ -10,49 +10,6 @@
 
 const SourceMapConsumer = require("source-map").SourceMapConsumer;
 
-const createDefaultUriResolver = (overrideFetcher) => {
-  const fetcher = overrideFetcher || fetch
-  const store = {};
-  return uri => {
-    if (store[uri]) {
-      return store[uri];
-    }
-
-    let result;
-
-    if (uri.match(/<anonymous>/)) {
-      return store[uri] = Promise.resolve(false);
-    }
-
-    // actually can resolve this, but skip for now
-    if (uri.match(/node_modules/)) {
-      return store[uri] = Promise.resolve(false);
-    }
-
-    // do not know how to resolve this, can use referrer
-    if (uri.indexOf("/") === -1) {
-      return store[uri] = Promise.resolve(false);
-    }
-
-    try {
-      result = fetcher(uri).then(response => {
-        if (response.status === 200) {
-          return response.text();
-        } else {
-          console.log(`${uri}: ${response}`);
-          // ignore error
-          return false;
-        }
-      });
-    } catch (e) {
-      console.log(`${uri}: ${e}`);
-      result = Promise.resolve(false);
-    }
-
-    return store[uri] = result;
-  };
-};
-
 const getSourceMapUri = jsSource => {
   const match = jsSource.match("//# [s]ourceMappingURL=(.*)[\\s]*$", "m");
   if (match && match.length === 2) {
@@ -82,7 +39,7 @@ const sourceMapResolver = (sourceMapUri, uri, opts) => {
     }
   }
 
-  return opts.uriResolver(sourceMapUri);
+  return opts.resolver(sourceMapUri);
 };
 
 const origName = (line, opts) => {
@@ -124,11 +81,12 @@ const parseLine = async (line, opts) => {
     const lineNumber = parseInt(parsedLine[2], 10);
     const column = parseInt(parsedLine[3], 10);
 
-    const script = await opts.uriResolver(uri);
+    const script = await opts.resolver(uri);
     if (script === false) {
       // console.log('script === false')
       return line;
     }
+    if (!script.match) console.log(script);
     const sourceMapUri = getSourceMapUri(script);
     if (sourceMapUri === false) {
       // console.log('sourceMapUri === false')
@@ -176,8 +134,6 @@ const parseLine = async (line, opts) => {
 };
 
 const mapStackTrace = (stack, opts) => {
-  opts.uriResolver = opts.uriResolver || createDefaultUriResolver();
-
   const { skip_lines } = configs(opts);
   const lines = stack.split("\n").slice(skip_lines);
   return Promise.all(lines.map(x => parseLine(x, opts))).then(x =>
@@ -185,5 +141,4 @@ const mapStackTrace = (stack, opts) => {
   );
 };
 
-exports.createDefaultUriResolver = createDefaultUriResolver;
 exports.default = mapStackTrace;
