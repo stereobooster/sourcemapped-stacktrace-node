@@ -1,7 +1,8 @@
 const mapStackTrace = require("../src/indexNode.js").default;
 const createNodeResolver = require("../src/indexNode.js").createNodeResolver;
-const testFetcher = require("./testFetcher.js").default;
-const testResolver = createNodeResolver({ uriFetcher: testFetcher });
+const uriFetcher = require("./testFetcher.js").uriFetcher;
+const fsFetcher = require("./testFetcher.js").fsFetcher;
+const testResolver = createNodeResolver({ uriFetcher, fsFetcher });
 
 const chromeTrace = `Error: bork from es6
     at BabelBorker.bork (http://novocaine.github.io/sourcemapped-stacktrace-demo/public_html/bork.babel.js:15:19)
@@ -73,6 +74,37 @@ test("works for puppeteer trace", done => {
     resolver: testResolver
   }).then(result => {
     expect(result).toBe(puppeteerMappedTrace);
+    done();
+  });
+});
+
+const puppeteerDoubleMappedTrace = `    at resize (src/ui/map.js:508:8)
+    at pitch (src/ui/map.js:331:31)
+    at s.componentDidMount (../node_modules/react-mapbox-gl/lib/map.js:139:0)
+    at componentDidMount (../node_modules/react-dom/cjs/react-dom.production.min.js:169:71)
+    at Nh (../node_modules/react-dom/cjs/react-dom.production.min.js:180:195)
+    at c (../node_modules/react-dom/cjs/react-dom.production.min.js:183:347)
+    at k (../node_modules/react-dom/cjs/react-dom.production.min.js:184:366)
+    at p (../node_modules/react-dom/cjs/react-dom.production.min.js:188:389)
+    at y (../node_modules/react-dom/cjs/react-dom.production.min.js:187:415)
+    at c (../node_modules/react-dom/cjs/react-dom.production.min.js:248:42)
+    at Page._handleException (/mapbox-prerender/node_modules/puppeteer/lib/Page.js:295:38)
+    at Session.Page.client.on.exception (/mapbox-prerender/node_modules/puppeteer/lib/Page.js:86:60)
+    at emitOne (events.js:115:13)
+    at Session.emit (events.js:210:7)
+    at Session._onMessage (/mapbox-prerender/node_modules/puppeteer/lib/Connection.js:199:12)
+    at Connection._onMessage (/mapbox-prerender/node_modules/puppeteer/lib/Connection.js:98:19)
+    at emitOne (events.js:115:13)
+    at WebSocket.emit (events.js:210:7)
+    at Receiver._receiver.onmessage (/mapbox-prerender/node_modules/ws/lib/WebSocket.js:143:47)
+    at Receiver.dataMessage (/mapbox-prerender/node_modules/ws/lib/Receiver.js:389:14)`;
+
+test("works for puppeteer trace - double", done => {
+  mapStackTrace(`dummy\n${puppeteerMappedTrace}`, {
+    isChromeOrEdge: true,
+    resolver: testResolver
+  }).then(result => {
+    expect(result).toBe(puppeteerDoubleMappedTrace);
     done();
   });
 });

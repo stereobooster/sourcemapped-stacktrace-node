@@ -111,6 +111,16 @@ const parseLine = async (line, opts) => {
         line: lineNumber,
         column: column
       });
+
+      if (
+        origPos.source === null &&
+        origPos.line === null &&
+        origPos.column === null
+      ) {
+        console.log(`Error in SourceMap of ${uri}`);
+        return line;
+      }
+
       return formatOriginalPosition(
         origPos.source,
         origPos.line,

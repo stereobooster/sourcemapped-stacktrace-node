@@ -7,17 +7,32 @@ const mockFetchRespnse = ({ text, status = 200 }) =>
     text: () => Promise.resolve(text)
   });
 
-const testFetcher = uri => {
+const fixturePath = uri => {
   const uriParts = uri.split("/");
   const fileName = uriParts[uriParts.length - 1];
-  const filePath = path.join(__dirname, "fixtures", fileName);
-  if (fs.existsSync(filePath)) {
-    return mockFetchRespnse({ text: fs.readFileSync(filePath, "utf8") });
-  }
-
-  console.log(uri);
-  return Promise.resolve(false);
-  // return fetch(uri);
+  return path.join(__dirname, "fixtures", fileName);
 };
 
-exports.default = testFetcher;
+const uriFetcher = uri => {
+  const filePath = fixturePath(uri);
+  if (fs.existsSync(filePath)) {
+    return mockFetchRespnse({ text: fs.readFileSync(filePath, "utf8") });
+  } else {
+    console.log(uri);
+    return Promise.reject();
+    // return fetch(uri);
+  }
+};
+
+const fsFetcher = uri => {
+  const filePath = fixturePath(uri);
+  if (fs.existsSync(filePath)) {
+    return Promise.resolve(fs.readFileSync(filePath, "utf8"));
+  } else {
+    console.log(uri);
+    return Promise.reject();
+  }
+};
+
+exports.uriFetcher = uriFetcher;
+exports.fsFetcher = fsFetcher;

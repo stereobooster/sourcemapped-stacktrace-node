@@ -6,8 +6,6 @@ const createResolver = ({ uriFetcher, fsFetcher, store }) => {
       return store[uri];
     }
 
-    let result;
-
     if (uri.match(/<anonymous>/)) {
       return (store[uri] = falseFetcher(uri));
     }
@@ -16,14 +14,20 @@ const createResolver = ({ uriFetcher, fsFetcher, store }) => {
     // if it starts as from http://, https://, file://
     // if it starts from ../node_modules (webpack thing)
     // use referer to try restor path
+    if (uri.match(/^\.\.\/node_modules/)) {
+      uri = uri.replace("../", "");
+      return (store[uri] = fsFetcher(uri));
+    }
 
     if (uri.match(/node_modules/)) {
-      return (store[uri] = fsFetcher(uri));
+      return (store[uri] = falseFetcher(uri));
     }
 
     if (uri.indexOf("/") === -1) {
       return (store[uri] = falseFetcher(uri));
     }
+
+    let result;
 
     try {
       result = uriFetcher(uri).then(response => {
