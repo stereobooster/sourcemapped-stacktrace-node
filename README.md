@@ -27,7 +27,31 @@ page.on("pageerror", e => {
 });
 ```
 
-# Here goes original readme:
+## Ideas 
+
+- use [unpkg](https://unpkg.com/#/) to get source of npm package
+- create online tool similar to [this](https://pastcompute.github.io/ScriptMapper/), but for error traces
+
+## ALternatives and usefull links
+
+- https://github.com/ryanseddon/source-map/wiki/Source-maps:-languages,-tools-and-other-info
+- http://sokra.github.io/source-map-visualization/
+- [online source map tool](https://pastcompute.github.io/ScriptMapper/)
+- [faster source map implementation](https://github.com/krisselden/fast-source-map)
+- [sourcemap decoder](https://github.com/Rich-Harris/sourcemap-codec)
+
+### other
+
+- [base64vlq](http://www.murzwin.com/base64vlq.html)
+- https://github.com/thlorenz/stack-mapper
+- https://github.com/thlorenz/source-map-cjs
+- https://github.com/thlorenz/convert-source-map/
+- https://www.npmjs.com/package/source-map-cli
+- https://github.com/janekp/mapstrace
+- https://github.com/stacktracejs/stacktrace.js/
+- https://github.com/csnover/TraceKit
+
+# Here goes original readme
 
 This is a simple module for applying source maps to JS stack traces in the browser. 
 
