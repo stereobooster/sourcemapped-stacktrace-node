@@ -11,6 +11,7 @@ function isSafari() {
 }
 
 function isIE11Plus() {
+  // @ts-ignore
   return document.documentMode && document.documentMode >= 11;
 }
 

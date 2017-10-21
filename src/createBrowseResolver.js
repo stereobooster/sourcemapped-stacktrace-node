@@ -12,4 +12,4 @@ const createBrowseResolver = ({
     store
   });
 
-exports.default = createUniversalUriResolver;
+exports.default = createBrowseResolver;
