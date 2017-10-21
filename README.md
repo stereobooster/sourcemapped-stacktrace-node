@@ -6,6 +6,13 @@
 
 - Support node modules, but check if file is readable
 - Support recursive resolution - if source map directs to minified file, than you can pickup sourcemap of minified file
+- Implement build script using rollup
+  - https://medium.com/@tarkus/how-to-build-and-publish-es6-modules-today-with-babel-and-rollup-4426d9c7ca71
+  - https://github.com/kriasoft/babel-starter-kit
+  - https://github.com/ochafik/es6-lenses/blob/master/package.json
+  - [use typescript to lint jsdoc](https://github.com/GoogleChrome/puppeteer/pull/986/files)
+  - [jsdoc to flow](https://github.com/Kegsay/flow-jsdoc)
+  - [jsdoc to ts](https://github.com/brettle/jsdoc-to-typescript-declaration)
 
 ## Example
 
@@ -27,7 +34,7 @@ page.on("pageerror", e => {
 });
 ```
 
-## Ideas 
+## Ideas
 
 - use [unpkg](https://unpkg.com/#/) to get source of npm package
 - create online tool similar to [this](https://pastcompute.github.io/ScriptMapper/), but for error traces
@@ -53,7 +60,7 @@ page.on("pageerror", e => {
 
 # Here goes original readme
 
-This is a simple module for applying source maps to JS stack traces in the browser. 
+This is a simple module for applying source maps to JS stack traces in the browser.
 
 ## The problem this solves
 
@@ -86,7 +93,7 @@ loader or a plain old script include. As an AMD module it exposes the method
 'mapStackTrace'. If an AMD loader is not found this function will be set on
 window.sourceMappedStackTrace.mapStackTrace.
 
-## API 
+## API
 
 ### mapStackTrace(stack, done [, opts])
 
@@ -94,7 +101,7 @@ Re-map entries in a stacktrace using sourcemaps if available.
 
 **Arguments:**
 
-- *stack*: Array of strings from the browser's stack representation. 
+- *stack*: Array of strings from the browser's stack representation.
 
 - *done*: Callback invoked with the transformed stacktrace (an Array of Strings) passed as the first argument
 
