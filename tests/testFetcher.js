@@ -20,7 +20,6 @@ const uriFetcher = uri => {
   } else {
     console.log(uri);
     return Promise.reject();
-    // return fetch(uri);
   }
 };
 
