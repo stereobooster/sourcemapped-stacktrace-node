@@ -54,33 +54,62 @@ const formatOriginalPosition = (source, line, column, name) => {
   return `    at ${name ? name : "(unknown)"} (${source}:${line}:${column})`;
 };
 
+const createParseLine = ({ regex, expected_fields, start }) => {
+  return line => {
+    const parsedLine = line.match(regex);
+    if (parsedLine && parsedLine.length === expected_fields) {
+      const uri = parsedLine[1 + start];
+      const lineNumber = parseInt(parsedLine[2 + start], 10);
+      const column = parseInt(parsedLine[3 + start], 10);
+      return { parsed: true, data: { uri, lineNumber, column } };
+    }
+    return { parsed: false, data: {} };
+  };
+};
+
+const combine = (a, b) => {
+  return line => {
+    const { parsed, data } = a(line);
+    if (parsed) return { parsed, data };
+    else return b(line);
+  };
+};
+
 const configs = opts => {
-  let expected_fields;
-  let regex;
-  let skip_lines;
+  let skipLines, parseLine;
   if (opts.isChromeOrEdge || opts.isIE11Plus) {
-    regex = /^ +at.+\((.*):([0-9]+):([0-9]+)/;
-    expected_fields = 4;
+    const parseLineName = createParseLine({
+      regex: /^ +at +([^ ]+) +\(?(.*):([0-9]+):([0-9]+)/,
+      expected_fields: 5,
+      start: 1
+    });
+    const parseLineNameless = createParseLine({
+      regex: /^ +at +(.*):([0-9]+):([0-9]+)/,
+      expected_fields: 4,
+      start: 0
+    });
+    parseLine = combine(parseLineName, parseLineNameless);
     // skip first line containing exception message
-    skip_lines = 1;
+    skipLines = 1;
   } else if (opts.isFirefox || opts.isSafari) {
-    regex = /@(.*):([0-9]+):([0-9]+)/;
-    expected_fields = 4;
-    skip_lines = 0;
+    parseLine = createParseLine({
+      regex: /@(.*):([0-9]+):([0-9]+)/,
+      expected_fields: 4,
+      start: 0
+    });
+    skipLines = 0;
   } else {
     throw new Error("unknown browser :(");
   }
-  return { regex, expected_fields, skip_lines };
+  return { parseLine, skipLines };
 };
 
 const parseLine = async (line, opts) => {
-  const { regex, expected_fields } = configs(opts);
-  const parsedLine = line.match(regex);
-  if (parsedLine && parsedLine.length === expected_fields) {
-    const uri = parsedLine[1];
-    const lineNumber = parseInt(parsedLine[2], 10);
-    const column = parseInt(parsedLine[3], 10);
+  const { parseLine } = configs(opts);
+  const { parsed, data } = parseLine(line);
 
+  if (parsed) {
+    const { uri, lineNumber, column } = data;
     const script = await opts.resolver(uri);
     if (script === false) {
       // console.log('script === false')
@@ -144,8 +173,8 @@ const parseLine = async (line, opts) => {
 };
 
 const mapStackTrace = (stack, opts) => {
-  const { skip_lines } = configs(opts);
-  const lines = stack.split("\n").slice(skip_lines);
+  const { skipLines } = configs(opts);
+  const lines = stack.split("\n").slice(skipLines);
   return Promise.all(lines.map(x => parseLine(x, opts))).then(x =>
     x.join("\n")
   );

@@ -108,3 +108,30 @@ test("works for puppeteer trace - double", done => {
     done();
   });
 });
+
+const typeScriptTrace = `Error: SyntaxError: Unexpected token < in JSON at position 0
+    at http://localhost:45678/static/js/0.81dd690f.chunk.js:1:3016
+    at r (http://localhost:45678/static/js/0.81dd690f.chunk.js:1:1684)
+    at Object.next (http://localhost:45678/static/js/0.81dd690f.chunk.js:1:1019)
+    at r (http://localhost:45678/static/js/0.81dd690f.chunk.js:1:1175)
+    at Object.next (http://localhost:45678/static/js/0.81dd690f.chunk.js:1:1019)
+    at c (http://localhost:45678/static/js/0.81dd690f.chunk.js:1:761)
+    at <anonymous>`;
+
+const typeScriptMapedTrace = `    at json (pages/InsightsPage.tsx:58:32)
+    at call (../static/js/0.81dd690f.chunk.js:61:22)
+    at step (../static/js/0.81dd690f.chunk.js:42:52)
+    at call (../static/js/0.81dd690f.chunk.js:46:96)
+    at step (../static/js/0.81dd690f.chunk.js:42:52)
+    at next (../static/js/0.81dd690f.chunk.js:33:57)
+    at <anonymous>`;
+
+test("works for TypeScript trace", done => {
+  mapStackTrace(typeScriptTrace, {
+    isChromeOrEdge: true,
+    resolver: testResolver
+  }).then(result => {
+    expect(result).toBe(typeScriptMapedTrace);
+    done();
+  });
+});
