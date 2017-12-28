@@ -1,6 +1,6 @@
 {
   "name": "sourcemapped-stacktrace-node",
-  "version": "2.1.5",
+  "version": "2.1.6",
   "homepage": "https://github.com/stereobooster/sourcemapped-stacktrace",
   "license": "BSD-3-Clause",
   "engines": {
