@@ -135,3 +135,37 @@ test("works for TypeScript trace", done => {
     done();
   });
 });
+
+const newKeywordTrace = `[Error: Error: Map container is already initialized.
+  at t._initContainer (http://localhost:45678/static/js/main.c9e3855f.js:1:643360)
+  at t.initialize (http://localhost:45678/static/js/main.c9e3855f.js:1:632349)
+  at new t (http://localhost:45678/static/js/main.c9e3855f.js:1:608947)
+  at Object.e.map (http://localhost:45678/static/js/main.c9e3855f.js:1:745755)
+  at t.componentDidMount (http://localhost:45678/static/js/main.c9e3855f.js:1:606131)
+  at commitLifeCycles (http://localhost:45678/static/js/main.c9e3855f.js:1:214171)
+  at E (http://localhost:45678/static/js/main.c9e3855f.js:1:201972)
+  at w (http://localhost:45678/static/js/main.c9e3855f.js:1:200782)
+  at _ (http://localhost:45678/static/js/main.c9e3855f.js:1:200313)
+  at b (http://localhost:45678/static/js/main.c9e3855f.js:1:200150)]`;
+
+const newKeywordMapedTrace = `    at t._initContainer (../node_modules/leaflet/dist/leaflet-src.js:4013:0)
+    at _initContainer (../node_modules/leaflet/dist/leaflet-src.js:3089:0)
+    at apply (../node_modules/leaflet/dist/leaflet-src.js:301:0)
+    at Object.e.map (../node_modules/leaflet/dist/leaflet-src.js:4626:0)
+    at t.componentDidMount (components/InteractiveMap.tsx:34:19)
+    at componentDidMount (../node_modules/react-dom/cjs/react-dom.production.min.js:159:12)
+    at hg (../node_modules/react-dom/cjs/react-dom.production.min.js:185:0)
+    at R (../node_modules/react-dom/cjs/react-dom.production.min.js:182:154)
+    at G (../node_modules/react-dom/cjs/react-dom.production.min.js:181:376)
+    at x (../node_modules/react-dom/cjs/react-dom.production.min.js:181:220)`;
+
+test("works for new keyword", done => {
+  mapStackTrace(newKeywordTrace, {
+    isChromeOrEdge: true,
+    resolver: testResolver
+  }).then(result => {
+    console.log(result)
+    expect(result).toBe(newKeywordMapedTrace);
+    done();
+  });
+});

@@ -79,7 +79,7 @@ const configs = opts => {
   let skipLines, parseLine;
   if (opts.isChromeOrEdge || opts.isIE11Plus) {
     const parseLineName = createParseLine({
-      regex: /^ +at +([^ ]+) +\(?(.*):([0-9]+):([0-9]+)/,
+      regex: /^ +at +((?:new )?[^ ]+) +\(?(.*):([0-9]+):([0-9]+)/,
       expected_fields: 5,
       start: 1
     });
