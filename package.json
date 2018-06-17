@@ -1,6 +1,6 @@
 {
   "name": "sourcemapped-stacktrace-node",
-  "version": "2.1.7",
+  "version": "2.1.8",
   "homepage": "https://github.com/stereobooster/sourcemapped-stacktrace",
   "license": "BSD-3-Clause",
   "engines": {
@@ -12,6 +12,7 @@
   },
   "contributors": ["stereobooster <stereobooster@gmail.com>"],
   "main": "src/indexNode.js",
+  "files": ["src"],
   "description":
     "A simple module for applying source maps to JS stack traces in the browser.",
   "dependencies": {
