@@ -1,3 +1,5 @@
+const fetch = require('cross-fetch');
+
 const falseFetcher = require("./falseFetcher.js").default;
 const createResolver = require("./createResolver.js").default;
 

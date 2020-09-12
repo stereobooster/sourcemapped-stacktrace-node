@@ -1,5 +1,5 @@
 // require("es6-promise").polyfill();
-require("isomorphic-fetch");
+const fetch = require('cross-fetch');
 
 const defaultFsFetcher = require("./fsFetcher.js").default;
 const createResolver = require("./createResolver.js").default;
